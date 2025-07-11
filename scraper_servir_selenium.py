@@ -10,6 +10,7 @@ options = Options()
 options.add_argument('--headless')
 options.add_argument('--disable-gpu')
 options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
 
 driver = webdriver.Chrome(options=options)
 url = "https://app.servir.gob.pe/DifusionOfertasExterno/faces/consultas/ofertas_laborales.xhtml"
