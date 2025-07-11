@@ -1,0 +1,40 @@
+name: Scraper diario de SERVIR
+
+on:
+  schedule:
+    - cron: '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Clonar repositorio
+      uses: actions/checkout@v3
+
+    - name: Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Instalar dependencias
+      run: |
+        pip install selenium
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser chromium-chromedriver
+        sudo ln -s /usr/lib/chromium-browser/chromedriver /usr/bin/chromedriver
+
+    - name: Ejecutar script
+      env:
+        PATH: /usr/bin/chromedriver:$PATH
+      run: |
+        python scraper_servir_selenium.py
+
+    - name: Subir cambios al repositorio
+      run: |
+        git config --global user.name 'github-actions'
+        git config --global user.email 'github-actions@github.com'
+        git add convocatorias.json
+        git commit -m "Actualización automática de convocatorias" || echo "Sin cambios"
+        git push
